@@ -40,7 +40,8 @@ class Projetil {
         ctx.fill()
     }
 
-    update(){
+    update() {
+        this.desenhar()
         this.x = this.x + this.velo.x
         this.y = this.y + this.velo.y
 
@@ -52,17 +53,29 @@ const x = canvas.width / 2
 const y = canvas.height / 2
 
 const jogador = new Jogador(x, y, 30, 'darkblue')
-jogador.desenhar()
 
-const tiro = new Projetil(canvas.width/ 2, canvas.height / 2, 5, 'black', {x:1 , y:1})
-function animação(){
- requestAnimationFrame(animação)
-   tiro.desenhar()
-    tiro.update()
-}
+
 // desenhando os projeteis
-addEventListener('click', (event) => {
+const tiros = []
 
+function animação() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    jogador.desenhar()
+    requestAnimationFrame(animação)
+    tiros.forEach((tiro) => {
+        tiro.update()
+    })
+}
+
+addEventListener('click', (event) => {
+    const angulo = Math.atan2(event.clientY - canvas.height / 2, event.clientX - canvas.width / 2)
+    
+   const velo = {
+     x: Math.cos(angulo),
+     y: Math.sin(angulo)
+   }
+
+    tiros.push(new Projetil(canvas.width / 2, canvas.height / 2, 5, 'red', velo))
 })
 
 animação()
