@@ -39,6 +39,12 @@ class Projetil {
         ctx.fillStyle = this.color
         ctx.fill()
     }
+
+    update(){
+        this.x = this.x + this.velo.x
+        this.y = this.y + this.velo.y
+
+    }
 }
 
 // desenhando o jogador
@@ -48,8 +54,15 @@ const y = canvas.height / 2
 const jogador = new Jogador(x, y, 30, 'darkblue')
 jogador.desenhar()
 
+const tiro = new Projetil(canvas.width/ 2, canvas.height / 2, 5, 'black', {x:1 , y:1})
+function animação(){
+ requestAnimationFrame(animação)
+   tiro.desenhar()
+    tiro.update()
+}
 // desenhando os projeteis
 addEventListener('click', (event) => {
-    const tiro = new Projetil(event.clientX , event.clientY , 5 , 'black', null)
-    tiro.desenhar()
+
 })
+
+animação()
