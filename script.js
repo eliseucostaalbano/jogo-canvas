@@ -81,6 +81,7 @@ const jogador = new Jogador(x, y, 30, 'darkblue')
 const tiros = []
 const inimigos = []
 
+// Criando  as  funções do jogo
 function spawnInimigos(){
    setInterval(() =>{
    const tamanho  = Math.random() * (30 - 5) + 5
@@ -89,7 +90,6 @@ function spawnInimigos(){
    if(Math.random() < 0.5){
      x = Math.random() < 0.5 ? 0 - tamanho : canvas.width + tamanho
      y = Math.random() * canvas.height
-    //  y = Math.random() < 0.5 ? 0 - tamanho : canvas.height + tamanho
    } else{
       x = Math.random() * canvas.width
       y = Math.random() < 0.5 ? 0 - tamanho : canvas.height + tamanho
@@ -104,7 +104,7 @@ function spawnInimigos(){
     inimigos.push(new Inimigo(x, y, tamanho, cor, velo))
     } , 1000)
 }
-// desenhando o jogo
+
 function animação() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     jogador.desenhar()
@@ -113,11 +113,22 @@ function animação() {
         tiro.update()
     })
 
-    inimigos.forEach(inimigo => {
+    inimigos.forEach((inimigo, index) => {
         inimigo.update()
+
+        tiros.forEach((tiro, tiroIndex) =>{
+        const distancia = Math.hypot(tiro.x - inimigo.x, tiro.y- inimigo.y)
+        // objetos se tocam
+        if(distancia - inimigo.radius - tiro.radius < 1){
+            setTimeout(() => {
+          inimigos.splice(index, 1)
+          tiros.splice(tiroIndex, 1)
+            }, 0)
+        }
+        })
     })
 }
-
+// Chamando as funções
 addEventListener('click', (event) => {
     const angulo = Math.atan2(event.clientY - canvas.height / 2, event.clientX - canvas.width / 2)
     
