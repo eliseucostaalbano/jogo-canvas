@@ -80,7 +80,7 @@ const y = canvas.height / 2
 const jogador = new Jogador(x, y, 30, 'darkblue')
 const tiros = []
 const inimigos = []
-
+let animaçaoId 
 // Criando  as  funções do jogo
 function spawnInimigos(){
    setInterval(() =>{
@@ -108,13 +108,19 @@ function spawnInimigos(){
 function animação() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     jogador.desenhar()
-    requestAnimationFrame(animação)
+    animaçaoId = requestAnimationFrame(animação)
     tiros.forEach((tiro) => {
         tiro.update()
     })
 
     inimigos.forEach((inimigo, index) => {
         inimigo.update()
+        const dist = Math.hypot(jogador.x - inimigo.x, jogador.y- inimigo.y)
+        // fim de jogo
+          if(dist - inimigo.radius - jogador.radius < 1){
+            cancelAnimationFrame(animaçaoId)
+          }
+
 
         tiros.forEach((tiro, tiroIndex) =>{
         const distancia = Math.hypot(tiro.x - inimigo.x, tiro.y- inimigo.y)
