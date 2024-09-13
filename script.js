@@ -77,7 +77,7 @@ class Inimigo {
 const x = canvas.width / 2
 const y = canvas.height / 2
 
-const jogador = new Jogador(x, y, 30, 'darkblue')
+const jogador = new Jogador(x, y, 10, 'white')
 const tiros = []
 const inimigos = []
 let animaçaoId
@@ -94,7 +94,7 @@ function spawnInimigos() {
             x = Math.random() * canvas.width
             y = Math.random() < 0.5 ? 0 - tamanho : canvas.height + tamanho
         }
-        const cor = 'black'
+        const cor = `hsl(${Math.random() * 360} , 50%, 50%)`
         const angulo = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x)
         const velo = {
             x: Math.cos(angulo),
@@ -106,7 +106,8 @@ function spawnInimigos() {
 }
 
 function animação() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
     jogador.desenhar()
     animaçaoId = requestAnimationFrame(animação)
     tiros.forEach((tiro, index) => {
@@ -149,11 +150,11 @@ addEventListener('click', (event) => {
     const angulo = Math.atan2(event.clientY - canvas.height / 2, event.clientX - canvas.width / 2)
 
     const velo = {
-        x: Math.cos(angulo),
-        y: Math.sin(angulo)
+        x: Math.cos(angulo) * 5,
+        y: Math.sin(angulo) * 5
     }
 
-    tiros.push(new Projetil(canvas.width / 2, canvas.height / 2, 5, 'silver', velo))
+    tiros.push(new Projetil(canvas.width / 2, canvas.height / 2, 5, 'white', velo))
 })
 
 animação()
