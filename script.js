@@ -1,7 +1,6 @@
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 
-
 canvas.width = innerWidth
 canvas.height = innerHeight
 
@@ -135,12 +134,22 @@ function animação() {
 
         tiros.forEach((tiro, tiroIndex) => {
             const distancia = Math.hypot(tiro.x - inimigo.x, tiro.y - inimigo.y)
-            // objetos se tocam
+            //  quando objetos tocam inimigos
             if (distancia - inimigo.radius - tiro.radius < 1) {
+
+                if(inimigo.radius -10 > 5){
+                gsap.to(inimigo, {
+                  radius: inimigo.radius -10
+                })
                 setTimeout(() => {
-                    inimigos.splice(index, 1)
                     tiros.splice(tiroIndex, 1)
                 }, 0)
+                } else{
+                  setTimeout(() => {
+                    inimigos.splice(index, 1)
+                    tiros.splice(tiroIndex, 1)
+                }, 0)  
+                }
             }
         })
     })
