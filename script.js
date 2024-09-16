@@ -72,6 +72,31 @@ class Inimigo {
     }
 }
 
+// Criando particulas
+class Particula {
+    constructor(x, y, tamanho, cor, velocidade) {
+        this.x = x
+        this.y = y
+        this.radius = tamanho
+        this.color = cor
+        this.velo = velocidade
+    }
+
+    desenhar() {
+        ctx.beginPath()
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+        ctx.fillStyle = this.color
+        ctx.fill()
+    }
+
+    update() {
+        this.desenhar()
+        this.x = this.x + this.velo.x
+        this.y = this.y + this.velo.y
+
+    }
+}
+
 // Criando as variaveis do jogo
 const x = canvas.width / 2
 const y = canvas.height / 2
@@ -79,7 +104,9 @@ const y = canvas.height / 2
 const jogador = new Jogador(x, y, 10, 'white')
 const tiros = []
 const inimigos = []
+const particulas = []
 let animaçaoId
+
 // Criando  as  funções do jogo
 function spawnInimigos() {
     setInterval(() => {
@@ -136,7 +163,13 @@ function animação() {
             const distancia = Math.hypot(tiro.x - inimigo.x, tiro.y - inimigo.y)
             //  quando objetos tocam inimigos
             if (distancia - inimigo.radius - tiro.radius < 1) {
-
+                for(let i = 0; i< 8; i++ ){
+                 particulas.push( new Particula(tiro.x, tiro.y, inimigo.color, 
+                { x: Math.random()- 0.5,
+                  y: Math.random()- 0.5
+                })
+                  )   
+                }
                 if(inimigo.radius -10 > 5){
                 gsap.to(inimigo, {
                   radius: inimigo.radius -10
@@ -154,6 +187,7 @@ function animação() {
         })
     })
 }
+
 // Chamando as funções
 addEventListener('click', (event) => {
     const angulo = Math.atan2(event.clientY - canvas.height / 2, event.clientX - canvas.width / 2)
