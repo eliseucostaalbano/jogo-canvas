@@ -1,5 +1,6 @@
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
+const fricção = 0.99
 
 canvas.width = innerWidth
 canvas.height = innerHeight
@@ -80,20 +81,26 @@ class Particula {
         this.radius = tamanho
         this.color = cor
         this.velo = velocidade
+        this.alfa = 1
     }
 
     desenhar() {
+        ctx.save()
+        ctx.globalAlpha = this.alfa
         ctx.beginPath()
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
         ctx.fillStyle = this.color
         ctx.fill()
+        ctx.restore()
     }
 
     update() {
         this.desenhar()
+        this.velo.x *= fricção
+        this.velo.y *= fricção
         this.x = this.x + this.velo.x
         this.y = this.y + this.velo.y
-
+        this.alfa -= 0.01
     }
 }
 
@@ -132,16 +139,23 @@ function spawnInimigos() {
 }
 
 function animação() {
+    animaçaoId = requestAnimationFrame(animação)
     ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     jogador.desenhar()
-    animaçaoId = requestAnimationFrame(animação)
+    particulas.forEach((particula, index) => {
+        if (particula.alfa <= 0) {
+            particulas.splice(index, 1)
+        } else {
+            particula.update()
+        }
+    })
     tiros.forEach((tiro, index) => {
         tiro.update()
         //  remover das pontas da tela
-        if (tiro.x + tiro.radius < 0 || 
-            tiro.x - tiro.radius > canvas.width || 
-            tiro.y + tiro.radius < 0 || 
+        if (tiro.x + tiro.radius < 0 ||
+            tiro.x - tiro.radius > canvas.width ||
+            tiro.y + tiro.radius < 0 ||
             tiro.y - tiro.radius > canvas.height) {
             setTimeout(() => {
                 tiros.splice(index, 1)
@@ -163,25 +177,27 @@ function animação() {
             const distancia = Math.hypot(tiro.x - inimigo.x, tiro.y - inimigo.y)
             //  quando objetos tocam inimigos
             if (distancia - inimigo.radius - tiro.radius < 1) {
-                for(let i = 0; i< 8; i++ ){
-                 particulas.push( new Particula(tiro.x, tiro.y, inimigo.color, 
-                { x: Math.random()- 0.5,
-                  y: Math.random()- 0.5
-                })
-                  )   
+                // criando explosões
+                for (let i = 0; i < inimigo.radius * 2; i++) {
+                    particulas.push(new Particula(tiro.x, tiro.y, Math.random() * 2 , inimigo.color,
+                        {
+                            x: (Math.random() - 0.5) * (Math.random() * 8),
+                            y: (Math.random() - 0.5) * (Math.random() * 8)
+                        })
+                    )
                 }
-                if(inimigo.radius -10 > 5){
-                gsap.to(inimigo, {
-                  radius: inimigo.radius -10
-                })
-                setTimeout(() => {
-                    tiros.splice(tiroIndex, 1)
-                }, 0)
-                } else{
-                  setTimeout(() => {
-                    inimigos.splice(index, 1)
-                    tiros.splice(tiroIndex, 1)
-                }, 0)  
+                if (inimigo.radius - 10 > 5) {
+                    gsap.to(inimigo, {
+                        radius: inimigo.radius - 10
+                    })
+                    setTimeout(() => {
+                        tiros.splice(tiroIndex, 1)
+                    }, 0)
+                } else {
+                    setTimeout(() => {
+                        inimigos.splice(index, 1)
+                        tiros.splice(tiroIndex, 1)
+                    }, 0)
                 }
             }
         })
