@@ -1,4 +1,5 @@
 const canvas = document.querySelector('canvas')
+const placarEl = document.querySelector('#Placar')
 const ctx = canvas.getContext('2d')
 const fricção = 0.99
 
@@ -113,6 +114,7 @@ const tiros = []
 const inimigos = []
 const particulas = []
 let animaçaoId
+let placar = 0
 
 // Criando  as  funções do jogo
 function spawnInimigos() {
@@ -179,7 +181,7 @@ function animação() {
             if (distancia - inimigo.radius - tiro.radius < 1) {
                 // criando explosões
                 for (let i = 0; i < inimigo.radius * 2; i++) {
-                    particulas.push(new Particula(tiro.x, tiro.y, Math.random() * 2 , inimigo.color,
+                    particulas.push(new Particula(tiro.x, tiro.y, Math.random() * 2, inimigo.color,
                         {
                             x: (Math.random() - 0.5) * (Math.random() * 8),
                             y: (Math.random() - 0.5) * (Math.random() * 8)
@@ -187,6 +189,9 @@ function animação() {
                     )
                 }
                 if (inimigo.radius - 10 > 5) {
+                    // aumentando o placar
+                    placar += 100
+                    placarEl.innerHTML = placar
                     gsap.to(inimigo, {
                         radius: inimigo.radius - 10
                     })
@@ -194,6 +199,9 @@ function animação() {
                         tiros.splice(tiroIndex, 1)
                     }, 0)
                 } else {
+                    // quando some todo da tela
+                    placar += 250
+                    placarEl.innerHTML = placar
                     setTimeout(() => {
                         inimigos.splice(index, 1)
                         tiros.splice(tiroIndex, 1)
