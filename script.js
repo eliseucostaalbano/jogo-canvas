@@ -112,14 +112,25 @@ class Particula {
 const x = canvas.width / 2
 const y = canvas.height / 2
 
-const jogador = new Jogador(x, y, 10, 'white')
-const tiros = []
-const inimigos = []
-const particulas = []
+let jogador = new Jogador(x, y, 10, 'white')
+let tiros = []
+let inimigos = []
+let particulas = []
 let animaçaoId
 let placar = 0
 
-// Criando  as  funções do jogo
+// Criando  as  funções do  jogo
+
+function init(){
+     jogador = new Jogador(x, y, 10, 'white')
+     tiros = []
+     inimigos = []
+     particulas = []
+     placar = 0
+     placarEl.innerHTML = placar
+     placarAtual.innerHTML = placar
+}
+
 function spawnInimigos() {
     setInterval(() => {
         const tamanho = Math.random() * (30 - 5) + 5
@@ -179,7 +190,6 @@ function animação() {
             placarAtual.innerHTML = placar
         }
 
-
         tiros.forEach((tiro, tiroIndex) => {
             const distancia = Math.hypot(tiro.x - inimigo.x, tiro.y - inimigo.y)
             //  quando objetos tocam inimigos
@@ -230,6 +240,7 @@ addEventListener('click', (event) => {
 })
 
 começarJogo.addEventListener('click', () => {
+    init()
     animação()
     spawnInimigos()
     modal.style.display = 'none'
