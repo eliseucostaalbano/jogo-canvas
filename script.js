@@ -1,5 +1,8 @@
 const canvas = document.querySelector('canvas')
 const placarEl = document.querySelector('#Placar')
+const placarAtual = document.querySelector('#placarAtual')
+const começarJogo = document.querySelector('#começarJogo')
+const modal = document.querySelector('#modal')
 const ctx = canvas.getContext('2d')
 const fricção = 0.99
 
@@ -172,6 +175,8 @@ function animação() {
         // fim de jogo
         if (dist - inimigo.radius - jogador.radius < 1) {
             cancelAnimationFrame(animaçaoId)
+            modal.style.display = 'flex'
+            placarAtual.innerHTML = placar
         }
 
 
@@ -224,5 +229,11 @@ addEventListener('click', (event) => {
     tiros.push(new Projetil(canvas.width / 2, canvas.height / 2, 5, 'white', velo))
 })
 
-animação()
-spawnInimigos()
+começarJogo.addEventListener('click', () => {
+    animação()
+    spawnInimigos()
+    modal.style.display = 'none'
+})
+
+
+
